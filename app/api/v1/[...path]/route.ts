@@ -4,8 +4,16 @@ export const dynamic = 'force-dynamic';
 
 async function proxy(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const { path } = await context.params;
-  const base = (process.env.BACKEND_API_URL ?? 'http://localhost:8000/api/v1').replace(/\/$/, '');
-  const url = new URL(`${base}/${path.join('/')}`);
+  const configuredBase = process.env.BACKEND_API_URL;
+  const base = configuredBase ?? (process.env.NODE_ENV === 'development' ? 'http://localhost:8000/api/v1' : null);
+  if (!base) {
+    return Response.json(
+      { detail: 'AeroOpt API is not configured for this deployment yet.' },
+      { status: 503 },
+    );
+  }
+  const normalizedBase = base.replace(/\/$/, '');
+  const url = new URL(`${normalizedBase}/${path.join('/')}`);
   request.nextUrl.searchParams.forEach((value, key) => url.searchParams.append(key, value));
   const headers = new Headers(request.headers);
   headers.delete('host');
