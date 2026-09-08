@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: aeroopt
+      POSTGRES_USER: aeroopt
+      POSTGRES_PASSWORD: aeroopt_dev_only
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aeroopt -d aeroopt"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  api:
+    build: ./backend
+    environment:
+      ENVIRONMENT: development
+      DATABASE_URL: postgresql+psycopg://aeroopt:aeroopt_dev_only@postgres:5432/aeroopt
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: development-only-change-me-please-32-chars
+      CORS_ORIGINS: http://localhost:3000
+      ALLOW_DEMO_PROVIDER: "true"
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+volumes:
+  postgres_data:
