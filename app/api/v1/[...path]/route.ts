@@ -1,4 +1,6 @@
 import type { NextRequest } from 'next/server';
+import { demoAirports, demoSearch } from '../../../../lib/demo-backend';
+import type { SearchRequest } from '../../../../types/travel';
 
 export const dynamic = 'force-dynamic';
 
@@ -7,8 +9,22 @@ async function proxy(request: NextRequest, context: { params: Promise<{ path: st
   const configuredBase = process.env.BACKEND_API_URL;
   const base = configuredBase ?? (process.env.NODE_ENV === 'development' ? 'http://localhost:8000/api/v1' : null);
   if (!base) {
+    // The hosted starter can run a safe, deterministic demo mode without a
+    // separate API service. Live accounts, saved flights, and alerts still
+    // require configuring BACKEND_API_URL.
+    if (path.join('/') === 'flights/search' && request.method === 'POST') {
+      try {
+        const body = (await request.json()) as SearchRequest;
+        return Response.json(demoSearch(body));
+      } catch {
+        return Response.json({ detail: 'The demo search request was invalid.' }, { status: 400 });
+      }
+    }
+    if (path.join('/') === 'airports' && request.method === 'GET') {
+      return Response.json(demoAirports(request.nextUrl.searchParams.get('query') ?? ''));
+    }
     return Response.json(
-      { detail: 'AeroOpt API is not configured for this deployment yet.' },
+      { detail: 'AeroOpt is running in demo mode. Configure BACKEND_API_URL for accounts, saved flights, alerts, and live fares.' },
       { status: 503 },
     );
   }

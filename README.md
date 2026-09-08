@@ -2,6 +2,8 @@
 
 AeroOpt is a travel-decision application that ranks flight offers by whole-journey value rather than ticket price alone. Its deterministic Travel Optimization Engine scores price, duration, layovers, reliability, baggage, schedule, airport convenience, flexibility, and connection risk on a transparent 0–100 scale.
 
+> **GitHub description:** AI-powered flight search that ranks the best overall journey—not just the cheapest fare—using a transparent Travel Optimization Score.
+
 ## Architecture
 
 | Layer | Implementation |
@@ -32,6 +34,10 @@ AeroOpt is a travel-decision application that ranks flight offers by whole-journ
    ```
 
 Open `http://localhost:3000`. The application proxy forwards `/api/v1/*` to `BACKEND_API_URL` (default `http://localhost:8000/api/v1`).
+
+### Hosted demo mode
+
+The frontend includes a deterministic, server-side demo backend for the core flight-search experience. If `BACKEND_API_URL` is not configured, `/api/v1/flights/search` and `/api/v1/airports` return clearly labelled demo data, so the hosted product can be previewed without provider credentials. Configure a real backend URL to enable authentication, saved flights, alerts, live fares, and database-backed features.
 
 For local PostgreSQL and Redis, run `docker compose up --build`; set `DATABASE_URL` and `REDIS_URL` as shown in `docker-compose.yml`.
 

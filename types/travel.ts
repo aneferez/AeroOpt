@@ -85,6 +85,7 @@ export type SearchRequest = {
   adults: number;
   cabin: 'economy' | 'premium_economy' | 'business' | 'first';
   max_stops: number;
+  max_price?: number;
   currency: string;
   profile: OptimizationProfile;
   preferred_departure_period?: 'morning' | 'afternoon' | 'evening' | 'night';
