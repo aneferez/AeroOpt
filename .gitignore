@@ -45,3 +45,6 @@ backend/__pycache__/
 backend/.pytest_cache/
 **/__pycache__/
 *.py[cod]
+
+.vercel
+.env*
