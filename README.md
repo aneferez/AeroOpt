@@ -71,6 +71,14 @@ npm run build
 
 ## Deployment
 
+### One-click demo API
+
+[Deploy the AeroOpt demo API on Render](https://render.com/deploy?repo=https://github.com/aneferez/AeroOpt)
+
+The repository-level `render.yaml` provisions the Dockerized FastAPI service, generates a private JWT secret, runs database migrations at startup, and configures the hosted AeroOpt origin. It deliberately uses demo flight data and an ephemeral SQLite database for evaluation. After deployment, verify `<your-render-url>/api/v1/health`, then configure the frontend's `BACKEND_API_URL` as `<your-render-url>/api/v1`.
+
+### Production deployment
+
 1. Provision managed PostgreSQL and Redis (Neon/Supabase and Upstash are suitable free-tier starting points).
 2. Deploy `backend/` to Render, Railway, Cloud Run, or an equivalent service using `backend/Dockerfile`. Set production variables, run `alembic upgrade head`, and expose `/api/v1/health` for health checks.
 3. Set the frontend host's `BACKEND_API_URL` to the deployed API's `/api/v1` URL. The frontend proxy keeps API credentials and refresh cookies same-origin to the browser.

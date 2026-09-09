@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: aeroopt-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: ENVIRONMENT
+        value: development
+      - key: DATABASE_URL
+        value: sqlite:///./aeroopt.db
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://aeroopt-flight-intelligence.aneruthfernandez.chatgpt.site
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: ALLOW_DEMO_PROVIDER
+        value: "true"
+      - key: FLIGHT_PROVIDER
+        value: demo
+      - key: PERSIST_SEARCH_OFFERS
+        value: "false"
