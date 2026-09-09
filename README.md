@@ -71,6 +71,17 @@ npm run build
 
 ## Deployment
 
+### Vercel frontend
+
+The repository supports a native Next.js build for Vercel while preserving the Vinext build used by OpenAI Sites:
+
+```powershell
+npm run build:vercel
+vercel --prod
+```
+
+The deployed frontend automatically uses its deterministic demo flight-search backend when `BACKEND_API_URL` is not set. Configure `BACKEND_API_URL=https://<your-api-host>/api/v1` in Vercel to enable the full FastAPI service.
+
 ### One-click demo API
 
 [Deploy the AeroOpt demo API on Render](https://render.com/deploy?repo=https://github.com/aneferez/AeroOpt)
