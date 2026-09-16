@@ -66,8 +66,11 @@ cd backend
 
 cd ..
 npm run lint
+npm run test:run
 npm run build
 ```
+
+Frontend unit tests use [Vitest](https://vitest.dev). Run `npm test` for the interactive watcher or `npm run test:run` for a single CI-style pass. Every push and pull request runs the full matrix (frontend lint/test/build and backend ruff/pytest) via [GitHub Actions](.github/workflows/ci.yml).
 
 ## Deployment
 
