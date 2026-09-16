@@ -1,18 +1,72 @@
 import type { AirportSuggestion, FlightOffer, PriceAlert, RankedOffer, SavedFlight, SearchRequest, SearchResponse, TokenResponse, UserSummary } from '@/types/travel';
 
 const airports: AirportSuggestion[] = [
+  // India
   { iata_code: 'MAA', name: 'Chennai International Airport', city: 'Chennai', country: 'India', score: 1 },
-  { iata_code: 'DXB', name: 'Dubai International Airport', city: 'Dubai', country: 'United Arab Emirates', score: 1 },
-  { iata_code: 'DWC', name: 'Al Maktoum International Airport', city: 'Dubai', country: 'United Arab Emirates', score: 0.9 },
   { iata_code: 'DEL', name: 'Indira Gandhi International Airport', city: 'Delhi', country: 'India', score: 1 },
   { iata_code: 'BOM', name: 'Chhatrapati Shivaji Maharaj International Airport', city: 'Mumbai', country: 'India', score: 1 },
   { iata_code: 'BLR', name: 'Kempegowda International Airport', city: 'Bengaluru', country: 'India', score: 1 },
+  { iata_code: 'HYD', name: 'Rajiv Gandhi International Airport', city: 'Hyderabad', country: 'India', score: 1 },
+  { iata_code: 'CCU', name: 'Netaji Subhas Chandra Bose International Airport', city: 'Kolkata', country: 'India', score: 1 },
+  { iata_code: 'COK', name: 'Cochin International Airport', city: 'Kochi', country: 'India', score: 1 },
+  { iata_code: 'GOI', name: 'Goa International Airport', city: 'Goa', country: 'India', score: 1 },
+  { iata_code: 'AMD', name: 'Sardar Vallabhbhai Patel International Airport', city: 'Ahmedabad', country: 'India', score: 1 },
+  // Middle East
+  { iata_code: 'DXB', name: 'Dubai International Airport', city: 'Dubai', country: 'United Arab Emirates', score: 1 },
+  { iata_code: 'DWC', name: 'Al Maktoum International Airport', city: 'Dubai', country: 'United Arab Emirates', score: 0.9 },
+  { iata_code: 'AUH', name: 'Zayed International Airport', city: 'Abu Dhabi', country: 'United Arab Emirates', score: 1 },
+  { iata_code: 'DOH', name: 'Hamad International Airport', city: 'Doha', country: 'Qatar', score: 1 },
+  { iata_code: 'RUH', name: 'King Khalid International Airport', city: 'Riyadh', country: 'Saudi Arabia', score: 1 },
+  { iata_code: 'JED', name: 'King Abdulaziz International Airport', city: 'Jeddah', country: 'Saudi Arabia', score: 1 },
+  { iata_code: 'MCT', name: 'Muscat International Airport', city: 'Muscat', country: 'Oman', score: 1 },
+  { iata_code: 'BAH', name: 'Bahrain International Airport', city: 'Manama', country: 'Bahrain', score: 1 },
+  { iata_code: 'KWI', name: 'Kuwait International Airport', city: 'Kuwait City', country: 'Kuwait', score: 1 },
+  // South & Southeast Asia
+  { iata_code: 'CMB', name: 'Bandaranaike International Airport', city: 'Colombo', country: 'Sri Lanka', score: 1 },
+  { iata_code: 'KTM', name: 'Tribhuvan International Airport', city: 'Kathmandu', country: 'Nepal', score: 1 },
+  { iata_code: 'DAC', name: 'Hazrat Shahjalal International Airport', city: 'Dhaka', country: 'Bangladesh', score: 1 },
   { iata_code: 'SIN', name: 'Singapore Changi Airport', city: 'Singapore', country: 'Singapore', score: 1 },
+  { iata_code: 'BKK', name: 'Suvarnabhumi Airport', city: 'Bangkok', country: 'Thailand', score: 1 },
+  { iata_code: 'KUL', name: 'Kuala Lumpur International Airport', city: 'Kuala Lumpur', country: 'Malaysia', score: 1 },
+  { iata_code: 'CGK', name: 'Soekarno-Hatta International Airport', city: 'Jakarta', country: 'Indonesia', score: 1 },
+  { iata_code: 'MNL', name: 'Ninoy Aquino International Airport', city: 'Manila', country: 'Philippines', score: 1 },
+  // East Asia
+  { iata_code: 'HKG', name: 'Hong Kong International Airport', city: 'Hong Kong', country: 'Hong Kong', score: 1 },
+  { iata_code: 'NRT', name: 'Narita International Airport', city: 'Tokyo', country: 'Japan', score: 1 },
+  { iata_code: 'HND', name: 'Haneda Airport', city: 'Tokyo', country: 'Japan', score: 0.9 },
+  { iata_code: 'ICN', name: 'Incheon International Airport', city: 'Seoul', country: 'South Korea', score: 1 },
+  { iata_code: 'PVG', name: 'Shanghai Pudong International Airport', city: 'Shanghai', country: 'China', score: 1 },
+  { iata_code: 'PEK', name: 'Beijing Capital International Airport', city: 'Beijing', country: 'China', score: 1 },
+  // Europe
   { iata_code: 'LHR', name: 'Heathrow Airport', city: 'London', country: 'United Kingdom', score: 1 },
   { iata_code: 'LGW', name: 'Gatwick Airport', city: 'London', country: 'United Kingdom', score: 0.9 },
+  { iata_code: 'MAN', name: 'Manchester Airport', city: 'Manchester', country: 'United Kingdom', score: 1 },
+  { iata_code: 'CDG', name: 'Charles de Gaulle Airport', city: 'Paris', country: 'France', score: 1 },
+  { iata_code: 'FRA', name: 'Frankfurt Airport', city: 'Frankfurt', country: 'Germany', score: 1 },
+  { iata_code: 'MUC', name: 'Munich Airport', city: 'Munich', country: 'Germany', score: 1 },
+  { iata_code: 'AMS', name: 'Amsterdam Airport Schiphol', city: 'Amsterdam', country: 'Netherlands', score: 1 },
+  { iata_code: 'IST', name: 'Istanbul Airport', city: 'Istanbul', country: 'Turkey', score: 1 },
+  { iata_code: 'MAD', name: 'Adolfo Suarez Madrid-Barajas Airport', city: 'Madrid', country: 'Spain', score: 1 },
+  { iata_code: 'FCO', name: 'Leonardo da Vinci Fiumicino Airport', city: 'Rome', country: 'Italy', score: 1 },
+  { iata_code: 'ZRH', name: 'Zurich Airport', city: 'Zurich', country: 'Switzerland', score: 1 },
+  { iata_code: 'DUB', name: 'Dublin Airport', city: 'Dublin', country: 'Ireland', score: 1 },
+  // Americas
   { iata_code: 'JFK', name: 'John F. Kennedy International Airport', city: 'New York', country: 'United States', score: 1 },
   { iata_code: 'EWR', name: 'Newark Liberty International Airport', city: 'New York', country: 'United States', score: 0.9 },
-  { iata_code: 'DOH', name: 'Hamad International Airport', city: 'Doha', country: 'Qatar', score: 1 },
+  { iata_code: 'LAX', name: 'Los Angeles International Airport', city: 'Los Angeles', country: 'United States', score: 1 },
+  { iata_code: 'SFO', name: 'San Francisco International Airport', city: 'San Francisco', country: 'United States', score: 1 },
+  { iata_code: 'ORD', name: 'O Hare International Airport', city: 'Chicago', country: 'United States', score: 1 },
+  { iata_code: 'YYZ', name: 'Toronto Pearson International Airport', city: 'Toronto', country: 'Canada', score: 1 },
+  { iata_code: 'GRU', name: 'Sao Paulo Guarulhos International Airport', city: 'Sao Paulo', country: 'Brazil', score: 1 },
+  // Oceania
+  { iata_code: 'SYD', name: 'Sydney Kingsford Smith Airport', city: 'Sydney', country: 'Australia', score: 1 },
+  { iata_code: 'MEL', name: 'Melbourne Airport', city: 'Melbourne', country: 'Australia', score: 1 },
+  { iata_code: 'AKL', name: 'Auckland Airport', city: 'Auckland', country: 'New Zealand', score: 1 },
+  // Africa
+  { iata_code: 'JNB', name: 'O. R. Tambo International Airport', city: 'Johannesburg', country: 'South Africa', score: 1 },
+  { iata_code: 'CAI', name: 'Cairo International Airport', city: 'Cairo', country: 'Egypt', score: 1 },
+  { iata_code: 'NBO', name: 'Jomo Kenyatta International Airport', city: 'Nairobi', country: 'Kenya', score: 1 },
+  { iata_code: 'ADD', name: 'Addis Ababa Bole International Airport', city: 'Addis Ababa', country: 'Ethiopia', score: 1 },
 ];
 
 const airlines = [

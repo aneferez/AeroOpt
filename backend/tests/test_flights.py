@@ -28,6 +28,12 @@ def test_airport_search_validates_minimum_length(client: TestClient):
     assert client.get("/api/v1/airports", params={"query": "d"}).status_code == 422
 
 
+def test_airport_search_spans_multiple_countries(client: TestClient):
+    tokyo = client.get("/api/v1/airports", params={"query": "tokyo"}).json()
+    assert {a["iata_code"] for a in tokyo} >= {"NRT", "HND"}
+    assert client.get("/api/v1/airports", params={"query": "paris"}).json()[0]["iata_code"] == "CDG"
+
+
 def test_flight_search_ranks_offers(client: TestClient):
     response = client.post("/api/v1/flights/search", json=_search())
     assert response.status_code == 200

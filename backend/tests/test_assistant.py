@@ -38,5 +38,15 @@ def test_interpret_reads_business_cabin(client: TestClient):
     assert extraction["max_stops"] == 1
 
 
+def test_interpret_resolves_new_global_routes(client: TestClient):
+    response = client.post(
+        "/api/v1/assistant/interpret",
+        json={"query": "nonstop from Singapore to Tokyo next month"},
+    )
+    extraction = response.json()["extraction"]
+    assert extraction["origin"] == "SIN"
+    assert extraction["destination"] == "NRT"
+
+
 def test_interpret_validates_minimum_query_length(client: TestClient):
     assert client.post("/api/v1/assistant/interpret", json={"query": "hi"}).status_code == 422

@@ -130,4 +130,12 @@ describe('demoAirports', () => {
   it('returns an empty list when nothing matches', () => {
     expect(demoAirports('zzzznowhere')).toEqual([]);
   });
+
+  it('covers airports well beyond the India–Gulf core', () => {
+    expect(demoAirports('tokyo').map((a) => a.iata_code)).toEqual(expect.arrayContaining(['NRT', 'HND']));
+    expect(demoAirports('paris').map((a) => a.iata_code)).toContain('CDG');
+    expect(demoAirports('new york').map((a) => a.iata_code)).toContain('JFK');
+    expect(demoAirports('sydney').map((a) => a.iata_code)).toContain('SYD');
+    expect(demoAirports('nairobi').map((a) => a.iata_code)).toContain('NBO');
+  });
 });

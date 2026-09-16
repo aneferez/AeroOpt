@@ -6,16 +6,69 @@ from app.core.config import get_settings
 from app.schemas.assistant import NaturalLanguageQueryResponse, TravelQueryExtraction
 
 AIRPORT_ALIASES = {
+    # India
     "chennai": "MAA",
-    "dubai": "DXB",
     "delhi": "DEL",
     "mumbai": "BOM",
     "bengaluru": "BLR",
     "bangalore": "BLR",
-    "singapore": "SIN",
-    "london": "LHR",
-    "new york": "JFK",
+    "hyderabad": "HYD",
+    "kolkata": "CCU",
+    "kochi": "COK",
+    "goa": "GOI",
+    "ahmedabad": "AMD",
+    # Middle East
+    "dubai": "DXB",
+    "abu dhabi": "AUH",
     "doha": "DOH",
+    "riyadh": "RUH",
+    "jeddah": "JED",
+    "muscat": "MCT",
+    "manama": "BAH",
+    "kuwait": "KWI",
+    # South & Southeast Asia
+    "colombo": "CMB",
+    "kathmandu": "KTM",
+    "dhaka": "DAC",
+    "singapore": "SIN",
+    "bangkok": "BKK",
+    "kuala lumpur": "KUL",
+    "jakarta": "CGK",
+    "manila": "MNL",
+    # East Asia
+    "hong kong": "HKG",
+    "tokyo": "NRT",
+    "seoul": "ICN",
+    "shanghai": "PVG",
+    "beijing": "PEK",
+    # Europe
+    "london": "LHR",
+    "manchester": "MAN",
+    "paris": "CDG",
+    "frankfurt": "FRA",
+    "munich": "MUC",
+    "amsterdam": "AMS",
+    "istanbul": "IST",
+    "madrid": "MAD",
+    "rome": "FCO",
+    "zurich": "ZRH",
+    "dublin": "DUB",
+    # Americas
+    "new york": "JFK",
+    "los angeles": "LAX",
+    "san francisco": "SFO",
+    "chicago": "ORD",
+    "toronto": "YYZ",
+    "sao paulo": "GRU",
+    # Oceania
+    "sydney": "SYD",
+    "melbourne": "MEL",
+    "auckland": "AKL",
+    # Africa
+    "johannesburg": "JNB",
+    "cairo": "CAI",
+    "nairobi": "NBO",
+    "addis ababa": "ADD",
 }
 WEEKDAYS = {name.lower(): index for index, name in enumerate(calendar.day_name)}
 
