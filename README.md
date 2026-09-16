@@ -75,7 +75,9 @@ npm run test:run
 npm run build
 ```
 
-Frontend unit tests use [Vitest](https://vitest.dev). Run `npm test` for the interactive watcher or `npm run test:run` for a single CI-style pass. Every push and pull request runs the full matrix (frontend lint/test/build and backend ruff/pytest) via [GitHub Actions](.github/workflows/ci.yml).
+Frontend unit tests use [Vitest](https://vitest.dev). Run `npm test` for the interactive watcher or `npm run test:run` for a single CI-style pass. End-to-end tests use [Playwright](https://playwright.dev): `npx playwright install chromium` once, then `npm run test:e2e` builds a production bundle, boots it in demo mode, and drives the flight-search, assistant, and demo-account flows in a real browser.
+
+Every push and pull request runs the full matrix (frontend lint/unit/build, Playwright e2e, and backend ruff/pytest) via [GitHub Actions](.github/workflows/ci.yml).
 
 ## Deployment
 
