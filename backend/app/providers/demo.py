@@ -12,18 +12,72 @@ from app.schemas.flight import (
 )
 
 AIRPORTS = [
+    # India
     ("MAA", "Chennai International Airport", "Chennai", "India"),
-    ("DXB", "Dubai International Airport", "Dubai", "United Arab Emirates"),
-    ("DWC", "Al Maktoum International Airport", "Dubai", "United Arab Emirates"),
     ("DEL", "Indira Gandhi International Airport", "Delhi", "India"),
     ("BOM", "Chhatrapati Shivaji Maharaj International Airport", "Mumbai", "India"),
     ("BLR", "Kempegowda International Airport", "Bengaluru", "India"),
+    ("HYD", "Rajiv Gandhi International Airport", "Hyderabad", "India"),
+    ("CCU", "Netaji Subhas Chandra Bose International Airport", "Kolkata", "India"),
+    ("COK", "Cochin International Airport", "Kochi", "India"),
+    ("GOI", "Goa International Airport", "Goa", "India"),
+    ("AMD", "Sardar Vallabhbhai Patel International Airport", "Ahmedabad", "India"),
+    # Middle East
+    ("DXB", "Dubai International Airport", "Dubai", "United Arab Emirates"),
+    ("DWC", "Al Maktoum International Airport", "Dubai", "United Arab Emirates"),
+    ("AUH", "Zayed International Airport", "Abu Dhabi", "United Arab Emirates"),
+    ("DOH", "Hamad International Airport", "Doha", "Qatar"),
+    ("RUH", "King Khalid International Airport", "Riyadh", "Saudi Arabia"),
+    ("JED", "King Abdulaziz International Airport", "Jeddah", "Saudi Arabia"),
+    ("MCT", "Muscat International Airport", "Muscat", "Oman"),
+    ("BAH", "Bahrain International Airport", "Manama", "Bahrain"),
+    ("KWI", "Kuwait International Airport", "Kuwait City", "Kuwait"),
+    # South & Southeast Asia
+    ("CMB", "Bandaranaike International Airport", "Colombo", "Sri Lanka"),
+    ("KTM", "Tribhuvan International Airport", "Kathmandu", "Nepal"),
+    ("DAC", "Hazrat Shahjalal International Airport", "Dhaka", "Bangladesh"),
     ("SIN", "Singapore Changi Airport", "Singapore", "Singapore"),
+    ("BKK", "Suvarnabhumi Airport", "Bangkok", "Thailand"),
+    ("KUL", "Kuala Lumpur International Airport", "Kuala Lumpur", "Malaysia"),
+    ("CGK", "Soekarno-Hatta International Airport", "Jakarta", "Indonesia"),
+    ("MNL", "Ninoy Aquino International Airport", "Manila", "Philippines"),
+    # East Asia
+    ("HKG", "Hong Kong International Airport", "Hong Kong", "Hong Kong"),
+    ("NRT", "Narita International Airport", "Tokyo", "Japan"),
+    ("HND", "Haneda Airport", "Tokyo", "Japan"),
+    ("ICN", "Incheon International Airport", "Seoul", "South Korea"),
+    ("PVG", "Shanghai Pudong International Airport", "Shanghai", "China"),
+    ("PEK", "Beijing Capital International Airport", "Beijing", "China"),
+    # Europe
     ("LHR", "Heathrow Airport", "London", "United Kingdom"),
     ("LGW", "Gatwick Airport", "London", "United Kingdom"),
+    ("MAN", "Manchester Airport", "Manchester", "United Kingdom"),
+    ("CDG", "Charles de Gaulle Airport", "Paris", "France"),
+    ("FRA", "Frankfurt Airport", "Frankfurt", "Germany"),
+    ("MUC", "Munich Airport", "Munich", "Germany"),
+    ("AMS", "Amsterdam Airport Schiphol", "Amsterdam", "Netherlands"),
+    ("IST", "Istanbul Airport", "Istanbul", "Turkey"),
+    ("MAD", "Adolfo Suarez Madrid-Barajas Airport", "Madrid", "Spain"),
+    ("FCO", "Leonardo da Vinci Fiumicino Airport", "Rome", "Italy"),
+    ("ZRH", "Zurich Airport", "Zurich", "Switzerland"),
+    ("DUB", "Dublin Airport", "Dublin", "Ireland"),
+    # Americas
     ("JFK", "John F. Kennedy International Airport", "New York", "United States"),
     ("EWR", "Newark Liberty International Airport", "New York", "United States"),
-    ("DOH", "Hamad International Airport", "Doha", "Qatar"),
+    ("LAX", "Los Angeles International Airport", "Los Angeles", "United States"),
+    ("SFO", "San Francisco International Airport", "San Francisco", "United States"),
+    ("ORD", "O Hare International Airport", "Chicago", "United States"),
+    ("YYZ", "Toronto Pearson International Airport", "Toronto", "Canada"),
+    ("GRU", "Sao Paulo Guarulhos International Airport", "Sao Paulo", "Brazil"),
+    # Oceania
+    ("SYD", "Sydney Kingsford Smith Airport", "Sydney", "Australia"),
+    ("MEL", "Melbourne Airport", "Melbourne", "Australia"),
+    ("AKL", "Auckland Airport", "Auckland", "New Zealand"),
+    # Africa
+    ("JNB", "O. R. Tambo International Airport", "Johannesburg", "South Africa"),
+    ("CAI", "Cairo International Airport", "Cairo", "Egypt"),
+    ("NBO", "Jomo Kenyatta International Airport", "Nairobi", "Kenya"),
+    ("ADD", "Addis Ababa Bole International Airport", "Addis Ababa", "Ethiopia"),
 ]
 
 AIRLINES = {

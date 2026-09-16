@@ -39,6 +39,13 @@ describe('demoInterpret', () => {
     expect(business.extraction.max_stops).toBe(0);
   });
 
+  it('resolves routes between the newly added global airports', () => {
+    const result = demoInterpret('nonstop from Singapore to Tokyo next month', FIXED_NOW);
+    expect(result.extraction.origin).toBe('SIN');
+    expect(result.extraction.destination).toBe('NRT');
+    expect(result.ready_to_search).toBe(true);
+  });
+
   it('reads explicit ISO dates for departure and return', () => {
     const result = demoInterpret('BOM to DXB on 2026-12-01 returning 2026-12-10', FIXED_NOW);
     expect(result.extraction.departure_date).toBe('2026-12-01');

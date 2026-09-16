@@ -44,6 +44,16 @@ The frontend includes a deterministic, server-side demo backend so the whole pro
 
 Nothing in demo mode persists beyond the visitor's browser. Configure a real `BACKEND_API_URL` to enable genuine authentication, database-backed saved flights and alerts, and live fares.
 
+### Real fares (meta-search)
+
+AeroOpt is a meta-search engine: it ranks real fares by whole-journey value, then hands off to the airline or OTA to complete the booking (no payments or ticket issuance run through AeroOpt). To switch the demo dataset for live fares:
+
+1. Create free [Amadeus for Developers](https://developers.amadeus.com) Self-Service keys — the test environment needs no accreditation and no contract.
+2. In `backend/.env`, set `AMADEUS_CLIENT_ID`, `AMADEUS_CLIENT_SECRET`, `FLIGHT_PROVIDER=amadeus`, and `ALLOW_DEMO_PROVIDER=false`. Keep `AMADEUS_BASE_URL=https://test.api.amadeus.com` for the free tier, or the production host once approved.
+3. Restart the API. `/api/v1/flights/search` and `/api/v1/airports` now return live Amadeus content (the [Amadeus adapter](backend/app/providers/amadeus.py) normalizes it into the same scored offers).
+
+The live adapter is covered by [tests](backend/tests/test_amadeus_provider.py) that mock the Amadeus responses, so its normalization is verified without live keys.
+
 For local PostgreSQL and Redis, run `docker compose up --build`; set `DATABASE_URL` and `REDIS_URL` as shown in `docker-compose.yml`.
 
 ## Configuration
