@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { type BookingContext, buildBookingUrl } from '@/lib/booking';
 import type { FlightOffer } from '@/types/travel';
 
@@ -86,5 +86,40 @@ describe('buildBookingUrl', () => {
   it('returns a safe Skyscanner URL when the route is incomplete', () => {
     const broken = makeOffer({ segments: [] });
     expect(buildBookingUrl(broken)).toBe('https://www.skyscanner.co.in/transport/flights/');
+  });
+});
+
+describe('buildBookingUrl partner configuration', () => {
+  afterEach(() => {
+    delete process.env.NEXT_PUBLIC_BOOKING_PARTNER;
+    delete process.env.NEXT_PUBLIC_BOOKING_AFFILIATE_TEMPLATE;
+  });
+
+  it('targets Google Flights when configured', () => {
+    process.env.NEXT_PUBLIC_BOOKING_PARTNER = 'google';
+    const url = new URL(buildBookingUrl(makeOffer(), context));
+    expect(url.hostname).toBe('www.google.com');
+    expect(url.pathname).toBe('/travel/flights');
+    expect(url.searchParams.get('q')).toContain('MAA to DXB on 2026-10-16');
+  });
+
+  it('targets Kayak when configured', () => {
+    process.env.NEXT_PUBLIC_BOOKING_PARTNER = 'kayak';
+    const url = new URL(buildBookingUrl(makeOffer(), context));
+    expect(url.hostname).toBe('www.kayak.co.in');
+    expect(url.pathname).toContain('/flights/MAA-DXB/2026-10-16');
+  });
+
+  it('falls back to Skyscanner for an unknown partner', () => {
+    process.env.NEXT_PUBLIC_BOOKING_PARTNER = 'not-a-partner';
+    expect(new URL(buildBookingUrl(makeOffer(), context)).hostname).toBe('www.skyscanner.co.in');
+  });
+
+  it('wraps the partner link in an affiliate redirect when a template is set', () => {
+    process.env.NEXT_PUBLIC_BOOKING_AFFILIATE_TEMPLATE = 'https://go.aff.example/r?aid=42&url={url}';
+    const wrapped = buildBookingUrl(makeOffer(), context);
+    expect(wrapped.startsWith('https://go.aff.example/r?aid=42&url=')).toBe(true);
+    const inner = decodeURIComponent(wrapped.split('url=')[1]);
+    expect(inner).toContain('skyscanner.co.in/transport/flights/maa/dxb/261016');
   });
 });
