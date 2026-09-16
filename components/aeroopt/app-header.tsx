@@ -9,6 +9,7 @@ import { useAuthStore } from '@/store/auth-store';
 
 const links = [
   { href: '/', label: 'Explore' },
+  { href: '/flights', label: 'Routes' },
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/saved', label: 'Saved & alerts' },
   { href: '/preferences', label: 'Preferences' },

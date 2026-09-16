@@ -19,7 +19,13 @@ import { SearchSkeleton } from './search-skeleton';
 
 type SortMode = 'score' | 'price' | 'duration' | 'risk';
 
-export function FlightExplorer() {
+export function FlightExplorer({
+  initialOrigin,
+  initialDestination,
+}: {
+  initialOrigin?: string;
+  initialDestination?: string;
+} = {}) {
   const response = useSearchStore((state) => state.response);
   const comparedIds = useSearchStore((state) => state.comparedIds);
   const setSearch = useSearchStore((state) => state.setSearch);
@@ -124,7 +130,7 @@ export function FlightExplorer() {
             <h1 className="max-w-xl text-4xl font-semibold leading-[1.05] tracking-[-0.045em] sm:text-5xl lg:text-[3.5rem]">Find the flight that earns your time.</h1>
             <p className="mt-4 max-w-xl text-base leading-7 text-slate-300 sm:text-lg">Compare total journey cost, connection risk, baggage and schedule—then see why one option fits you best.</p>
           </div>
-          <FlightSearchPanel onSearch={(request) => search.mutate(request)} pending={search.isPending} />
+          <FlightSearchPanel initialDestination={initialDestination} initialOrigin={initialOrigin} onSearch={(request) => search.mutate(request)} pending={search.isPending} />
           <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-300">
             <span className="flex items-center gap-2"><ShieldCheck className="size-4 text-cyan-300" /> Rechecks live prices when a provider is configured</span>
             <span className="flex items-center gap-2"><Clock3 className="size-4 text-cyan-300" /> Deterministic journey scoring</span>

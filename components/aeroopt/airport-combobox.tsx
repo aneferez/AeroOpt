@@ -12,12 +12,17 @@ import {
   ComboboxList,
 } from '@/components/ui/combobox';
 import { apiFetch } from '@/lib/api';
+import { CITIES } from '@/lib/routes';
 import type { AirportSuggestion } from '@/types/travel';
 
-const knownAirports: Record<string, AirportSuggestion> = {
-  MAA: { iata_code: 'MAA', name: 'Chennai International Airport', city: 'Chennai', country: 'India', score: 1 },
-  DXB: { iata_code: 'DXB', name: 'Dubai International Airport', city: 'Dubai', country: 'United Arab Emirates', score: 1 },
-};
+// Seeded so a route prefilled from an SEO landing page (or the assistant) shows
+// its city label immediately, before the async airport lookup resolves.
+const knownAirports: Record<string, AirportSuggestion> = Object.fromEntries(
+  Object.values(CITIES).map((city) => [
+    city.code,
+    { iata_code: city.code, name: city.airport, city: city.city, country: city.country, score: 1 },
+  ]),
+);
 
 type AirportComboboxProps = {
   label: string;
@@ -26,7 +31,9 @@ type AirportComboboxProps = {
 };
 
 export function AirportCombobox({ label, value, onChange }: AirportComboboxProps) {
-  const [query, setQuery] = useState(knownAirports[value]?.city ?? value);
+  const [query, setQuery] = useState(
+    knownAirports[value] ? `${knownAirports[value].city} (${knownAirports[value].iata_code})` : value,
+  );
   const { data = [], isFetching } = useQuery({
     queryKey: ['airports', query],
     queryFn: () => apiFetch<AirportSuggestion[]>(`/airports?query=${encodeURIComponent(query)}`, { auth: false }),
