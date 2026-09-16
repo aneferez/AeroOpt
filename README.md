@@ -37,7 +37,12 @@ Open `http://localhost:3000`. The application proxy forwards `/api/v1/*` to `BAC
 
 ### Hosted demo mode
 
-The frontend includes a deterministic, server-side demo backend for the core flight-search experience. If `BACKEND_API_URL` is not configured, `/api/v1/flights/search` and `/api/v1/airports` return clearly labelled demo data, so the hosted product can be previewed without provider credentials. Configure a real backend URL to enable authentication, saved flights, alerts, live fares, and database-backed features.
+The frontend includes a deterministic, server-side demo backend so the whole product can be explored without provider credentials or a database. When `BACKEND_API_URL` is not configured, the API route serves clearly labelled sample data:
+
+- **Signed out:** `flights/search` and `airports` (flight ranking and airport lookup), plus `assistant/interpret`, which runs a transparent rule-based query parser — no LLM, matching the deterministic guarantee.
+- **Demo account:** `auth/register` and `auth/login` start a session stored in an httpOnly cookie (no real credentials are checked or stored), unlocking `users/dashboard`, `saved-flights`, `alerts`, and `users/preferences` (preference edits persist in the cookie for that browser). `auth/refresh` restores the session and `auth/logout` clears it.
+
+Nothing in demo mode persists beyond the visitor's browser. Configure a real `BACKEND_API_URL` to enable genuine authentication, database-backed saved flights and alerts, and live fares.
 
 For local PostgreSQL and Redis, run `docker compose up --build`; set `DATABASE_URL` and `REDIS_URL` as shown in `docker-compose.yml`.
 
