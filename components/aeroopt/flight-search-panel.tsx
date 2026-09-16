@@ -34,9 +34,19 @@ function dateAfter(days: number) {
   return value.toISOString().slice(0, 10);
 }
 
-export function FlightSearchPanel({ onSearch, pending }: { onSearch: (request: SearchRequest) => void; pending: boolean }) {
-  const [origin, setOrigin] = useState('MAA');
-  const [destination, setDestination] = useState('DXB');
+export function FlightSearchPanel({
+  onSearch,
+  pending,
+  initialOrigin = 'MAA',
+  initialDestination = 'DXB',
+}: {
+  onSearch: (request: SearchRequest) => void;
+  pending: boolean;
+  initialOrigin?: string;
+  initialDestination?: string;
+}) {
+  const [origin, setOrigin] = useState(initialOrigin);
+  const [destination, setDestination] = useState(initialDestination);
   const [departureDate, setDepartureDate] = useState(() => dateAfter(42));
   const [returnDate, setReturnDate] = useState('');
   const [adults, setAdults] = useState(1);
