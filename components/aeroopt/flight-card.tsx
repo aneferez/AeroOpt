@@ -2,14 +2,16 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { BriefcaseBusiness, Check, Clock3, Heart, Luggage, Plane, ShieldCheck } from 'lucide-react';
+import { BriefcaseBusiness, Check, Clock3, ExternalLink, Heart, Luggage, Plane, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { apiFetch } from '@/lib/api';
+import { buildBookingUrl } from '@/lib/booking';
 import { formatDate, formatDuration, formatMoney, formatTime } from '@/lib/format';
 import { useAuthStore } from '@/store/auth-store';
+import { useSearchStore } from '@/store/search-store';
 import type { RankedOffer, SavedFlight } from '@/types/travel';
 import { ScoreBreakdownDialog } from './score-breakdown';
 import { ScoreDial } from './score-dial';
@@ -25,8 +27,22 @@ export function FlightCard({ item, compared, onCompare }: FlightCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [saved, setSaved] = useState(false);
   const user = useAuthStore((state) => state.user);
+  const request = useSearchStore((state) => state.request);
   const first = offer.segments[0];
   const last = offer.segments[offer.segments.length - 1];
+  const bookingUrl = buildBookingUrl(
+    offer,
+    request
+      ? {
+          origin: request.origin,
+          destination: request.destination,
+          departure_date: request.departure_date,
+          return_date: request.return_date,
+          cabin: request.cabin,
+          adults: request.adults,
+        }
+      : null,
+  );
   const save = useMutation({
     mutationFn: () => apiFetch<SavedFlight>('/saved-flights', {
       method: 'POST',
@@ -117,9 +133,13 @@ export function FlightCard({ item, compared, onCompare }: FlightCardProps) {
             {saved ? <Check className="size-4" /> : <Heart className="size-4" />}
             {saved ? 'Saved' : user ? 'Save' : 'Sign in to save'}
           </Button>
-          <Button onClick={() => setExpanded((value) => !value)}>
+          <Button onClick={() => setExpanded((value) => !value)} variant="outline">
             <Plane className="size-4" />
             {expanded ? 'Hide details' : 'View details'}
+          </Button>
+          <Button render={<a aria-label={`Book this ${offer.airline_name} flight on a partner site`} href={bookingUrl} rel="noopener noreferrer" target="_blank" />}>
+            Book
+            <ExternalLink className="size-4" />
           </Button>
         </div>
       </div>
@@ -134,7 +154,7 @@ export function FlightCard({ item, compared, onCompare }: FlightCardProps) {
               </div>
             ))}
           </div>
-          <p className="mt-4 text-xs leading-5 text-slate-500">Fare must be revalidated with {offer.provider} before any booking handoff. AeroOpt does not sell or issue tickets.</p>
+          <p className="mt-4 text-xs leading-5 text-slate-500">AeroOpt is a meta-search: it ranks fares but never sells or issues tickets. “Book” opens a partner site where the fare is revalidated before you pay.</p>
         </div>
       )}
     </motion.article>

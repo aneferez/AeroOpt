@@ -13,4 +13,9 @@ test('ranks flights from a natural-language request in demo mode', async ({ page
   await expect(page.getByRole('heading', { name: /Recommended ways to fly/i })).toBeVisible();
   await expect(page.getByText(/options$/i).first()).toBeVisible();
   await expect(page.getByText('Smart Pick').first()).toBeVisible();
+
+  // Meta-search hand-off: each result links out to a partner to complete booking.
+  const book = page.getByRole('link', { name: 'Book' }).first();
+  await expect(book).toBeVisible();
+  await expect(book).toHaveAttribute('href', /skyscanner\.co\.in\/transport\/flights/);
 });
