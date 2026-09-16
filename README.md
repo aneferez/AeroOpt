@@ -54,6 +54,17 @@ AeroOpt is a meta-search engine: it ranks real fares by whole-journey value, the
 
 The live adapter is covered by [tests](backend/tests/test_amadeus_provider.py) that mock the Amadeus responses, so its normalization is verified without live keys.
 
+### Booking hand-off
+
+Each ranked offer has a **Book** button that opens a partner site to complete the purchase — AeroOpt never sells or issues tickets. Configure the destination at build time (see [lib/booking.ts](lib/booking.ts)):
+
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_BOOKING_PARTNER` | `skyscanner` (default), `google`, or `kayak` |
+| `NEXT_PUBLIC_BOOKING_AFFILIATE_TEMPLATE` | Optional. A redirect URL containing `{url}`, replaced with the URL-encoded partner link so bookings are attributed to your affiliate account. |
+
+For example, set `NEXT_PUBLIC_BOOKING_AFFILIATE_TEMPLATE=https://your-network.example/r?aid=YOUR_ID&url={url}` to monetise every hand-off without any code change.
+
 For local PostgreSQL and Redis, run `docker compose up --build`; set `DATABASE_URL` and `REDIS_URL` as shown in `docker-compose.yml`.
 
 ## Configuration
