@@ -47,6 +47,19 @@ class Settings(BaseSettings):
             return [origin.strip() for origin in value.split(",") if origin.strip()]
         return value
 
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def normalize_database_url(cls, value: object) -> object:
+        # Managed hosts (Render, Neon, Supabase, Heroku) hand out "postgres://" or
+        # "postgresql://" URLs, whose default SQLAlchemy driver is psycopg2. We only
+        # ship psycopg v3, so pin the driver explicitly and accept those URLs as-is.
+        if isinstance(value, str):
+            if value.startswith("postgres://"):
+                return "postgresql+psycopg://" + value[len("postgres://") :]
+            if value.startswith("postgresql://"):
+                return "postgresql+psycopg://" + value[len("postgresql://") :]
+        return value
+
     @field_validator("jwt_secret")
     @classmethod
     def require_secure_production_secret(cls, value: str, info) -> str:
