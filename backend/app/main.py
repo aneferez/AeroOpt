@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from app.core.config import get_settings
 from app.core.database import Base, engine
 from app.core.rate_limit import RateLimitMiddleware
+from app.providers import provider_status
 from app.routers import alerts, assistant, auth, flights, health, saved, trips, users
 
 settings = get_settings()
@@ -19,6 +20,17 @@ logger = logging.getLogger("aeroopt")
 async def lifespan(_: FastAPI):
     if settings.environment in {"development", "test"}:
         Base.metadata.create_all(bind=engine)
+    status = provider_status(settings)
+    logger.info("Flight provider: %s (mode=%s)", status["provider"], status["mode"])
+    if settings.flight_provider == "amadeus" and not status["live_configured"]:
+        logger.error(
+            "FLIGHT_PROVIDER=amadeus but Amadeus credentials are missing; live flight search will fail"
+        )
+    elif settings.is_production and status["mode"] == "demo":
+        logger.warning(
+            "Production is serving DEMO fares. Set FLIGHT_PROVIDER=amadeus with Amadeus "
+            "credentials and ALLOW_DEMO_PROVIDER=false to go live."
+        )
     yield
 
 
