@@ -1,0 +1,31 @@
+# AeroOpt price-alert worker — portable crontab
+#
+# Use this on a self-hosted box / VM / container platform WITHOUT a native cron
+# type. If you deploy on Render, the cron job is already defined in
+# `render.production.yaml` (service: aeroopt-price-alerts) — you do not need this.
+#
+# The worker checks every active alert, records price history, and emails a
+# recipient when a fare drops to/below their target (only if SMTP_* is set).
+# It runs once and exits, so it is safe to schedule.
+#
+# ── Option A: system crontab on the backend host ────────────────────────────
+# Install with:  crontab deploy/price-alerts.crontab   (edit paths first)
+# The worker needs the SAME environment as the API (DATABASE_URL, REDIS_URL,
+# FLIGHT_PROVIDER, ALLOW_DEMO_PROVIDER, AMADEUS_*, and optional SMTP_*). Point
+# it at an env file so cron — which runs with a bare environment — can see them.
+#
+# Every 45 minutes (README recommends 30–60):
+*/45 * * * * cd /srv/aeroopt/backend && set -a && . /srv/aeroopt/backend/.env && set +a && /srv/aeroopt/backend/.venv/bin/python -m app.workers.price_alerts >> /var/log/aeroopt/price-alerts.log 2>&1
+
+# ── Option B: run inside the API's Docker container/host ─────────────────────
+# */45 * * * * docker exec aeroopt-api python -m app.workers.price_alerts >> /var/log/aeroopt/price-alerts.log 2>&1
+
+# ── Option C: Railway / Fly / Kubernetes cron ───────────────────────────────
+# Reuse the backend image and set the start command / CronJob command to:
+#     python -m app.workers.price_alerts
+# with the same env vars as the API service, on the schedule:  */45 * * * *
+#
+# Notes:
+#   - Cron minute/hour fields are host-local time; the worker logic is timezone-safe (UTC).
+#   - Verify a run manually first:  python -m app.workers.price_alerts
+#     It prints e.g. {'checked': 3, 'triggered': 1, 'failed': 0}

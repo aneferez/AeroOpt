@@ -1,0 +1,123 @@
+# AeroOpt — PRODUCTION Render Blueprint (live Amadeus fares)
+#
+# This is the production counterpart to the demo `render.yaml` (which stays in
+# place for the one-click evaluation deploy in the README). It provisions a
+# managed Postgres, a managed Redis cache, the FastAPI web service, and a cron
+# job that runs the price-alert worker.
+#
+# HOW TO USE
+#   1. Copy this file over the demo blueprint:  cp render.production.yaml render.yaml
+#      (Render syncs Blueprints from `render.yaml` at the repo root.)
+#   2. In Render: New > Blueprint > pick this repo. Render creates every resource
+#      below and prompts you for the values marked `sync: false`.
+#   3. Fill in the prompts: CORS_ORIGINS, AMADEUS_CLIENT_ID/SECRET, and (optional)
+#      SMTP_* for alert emails.
+#   4. After the first deploy, verify: GET https://<api-host>/api/v1/status
+#      should report "mode": "live" and "live_configured": true.
+#
+# NOTES
+#   - The web Dockerfile runs `alembic upgrade head` on startup, so migrations
+#     apply automatically on every deploy.
+#   - DATABASE_URL is handed out by Render as `postgresql://...`; the backend
+#     normalizes it to the psycopg v3 driver, so no manual editing is needed.
+#   - `plan: free` on the database/cache is fine for a first cut-over, but the
+#     free Postgres instance EXPIRES after 30 days — upgrade to a paid plan
+#     (e.g. basic-256mb) before you depend on it. Free Redis has no persistence.
+
+databases:
+  - name: aeroopt-db
+    plan: free                 # UPGRADE for production: free Postgres expires after 30 days
+    postgresMajorVersion: "16"
+    ipAllowList: []            # empty = internal connections only (no public access)
+
+envVarGroups:
+  # Shared by the web service and the price-alert cron job so the Amadeus
+  # credentials and SMTP settings are entered once.
+  - name: aeroopt-shared
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true    # Render generates a strong secret once, shared by both services
+      - key: FLIGHT_PROVIDER
+        value: amadeus         # live fares (not the demo dataset)
+      - key: ALLOW_DEMO_PROVIDER
+        value: "false"         # hard-off in production
+      - key: AMADEUS_BASE_URL
+        value: https://test.api.amadeus.com   # switch to https://api.amadeus.com with production keys
+      - key: AMADEUS_CLIENT_ID
+        sync: false            # you set this in the Render dashboard (never committed)
+      - key: AMADEUS_CLIENT_SECRET
+        sync: false
+      # Optional — price-alert emails. Leave unset to skip email delivery
+      # (alerts are still recorded; the worker just logs that SMTP is off).
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USERNAME
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM_EMAIL
+        sync: false
+      - key: SMTP_USE_TLS
+        value: "true"
+
+services:
+  # Managed Redis (Key Value) — shared cache for normalized flight searches.
+  - type: redis
+    name: aeroopt-cache
+    plan: free                 # UPGRADE for production; free tier has no persistence
+    ipAllowList: []            # internal-only
+    maxmemoryPolicy: allkeys-lru
+
+  # FastAPI API service.
+  - type: web
+    name: aeroopt-api
+    runtime: docker
+    plan: starter              # no cold-start spin-down; use `free` only for testing
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/v1/health
+    envVars:
+      - fromGroup: aeroopt-shared
+      - key: ENVIRONMENT
+        value: production
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: PERSIST_SEARCH_OFFERS
+        value: "false"
+      - key: CORS_ORIGINS
+        sync: false            # your frontend origin(s), comma-separated, e.g. https://app.example.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: aeroopt-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: aeroopt-cache
+          property: connectionString
+
+  # Price-alert worker — runs on a schedule instead of a long-lived process.
+  # `dockerCommand` overrides the web CMD so it runs the worker once and exits.
+  - type: cron
+    name: aeroopt-price-alerts
+    runtime: docker
+    plan: starter              # cron jobs have no free plan
+    schedule: "*/45 * * * *"   # every 45 minutes (README recommends 30–60)
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    dockerCommand: python -m app.workers.price_alerts
+    envVars:
+      - fromGroup: aeroopt-shared
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: aeroopt-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: aeroopt-cache
+          property: connectionString
